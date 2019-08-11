@@ -1,89 +1,77 @@
-import db from "../db/modules/baseConnection";
 import ArticleSQL from "../db/articleSQL";
+import dbHelper from "../db/modules/dbHelper";
+import Result from "./result";
 
-const ArticleServer = {
+export default class ArticleServer {
     //获取所有文章的数据
-    getAll: () => {
-        return new Promise((resolve, reject) => {
-            db.query(ArticleSQL.queryAll, (err, result) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
-            });
-        });
-    },
+    getAll = () => {
+        let result = new Result();
+        result.message = new dbHelper().query(ArticleSQL.queryAll);
+        return result;
+    };
 
     //根据文章 id 获取文章
-    getById: id => {
-        return new Promise((resolve, reject) => {
-            if (!!id) {
-                db.query(ArticleSQL.queryById(id), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                });
-            } else {
-                reject("id为空！");
-            }
-        });
-    },
+    getById = id => {
+        let result = new Result();
+        if (!id) {
+            result.message = "文章 id 为空，获取失败！";
+        } else {
+            result.message = new dbHelper().query(ArticleSQL.queryById(id));
+        }
+        return result;
+    };
 
     //新增文章
-    add: aticleInfo => {
-        return new Promise((resolve, reject) => {
-            let { title, content, date, classify_id } = aticleInfo;
-            if (!!title && !!content && !!date && !!classify_id) {
-                db.query(ArticleSQL.insert(aticleInfo), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("success!");
-                    }
-                });
-            } else {
-                reject("传参有空！");
-            }
-        });
-    },
-    //根据文章id 修改文章信息
-    editById: aticleInfo => {
-        return new Promise((resolve, reject) => {
-            let { id, title, content, date, classify_id } = aticleInfo;
-            if (!!id) {
-                db.query(
-                    ArticleSQL.update(id, title, content, date, classify_id),
-                    (err, result) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve("success!");
-                        }
-                    }
-                );
-            } else {
-                reject("id 为空！");
-            }
-        });
-    },
+    add = articleInfo => {
+        let result = new Result();
+        if (!articleInfo.title) {
+            result.message = "标题为空，新增失败！";
+        } else if (!articleInfo.content) {
+            result.message = "内容为空，新增失败！";
+        } else if (!articleInfo.date) {
+            result.message = "日期为空，新增失败！";
+        } else if (!articleInfo.classify_id) {
+            result.message = "分类 id 为空，新增失败！";
+        } else {
+            result.message = new dbHelper().query(
+                ArticleSQL.insert(articleInfo),
+                "need articleId"
+            );
+        }
+        return result;
+    };
 
+    //根据文章id 修改文章信息
+    editById = articleInfo => {
+        let result = new Result();
+        if (!articleInfo.id) {
+            result.message = "文章 id 为空，修改失败！";
+        } else if (!articleInfo.title) {
+            result.message = "标题为空，修改失败！";
+        } else if (!articleInfo.content) {
+            result.message = "内容为空，修改失败！";
+        } else if (!articleInfo.date) {
+            result.message = "日期为空，修改失败！";
+        } else if (!articleInfo.classify_id) {
+            result.message = "分类 id 为空，修改失败！";
+        } else {
+            result.message = new dbHelper().query(
+                ArticleSQL.update(articleInfo),
+                articleInfo
+            );
+        }
+        return result;
+    };
     //删除文章
-    deleteById: id => {
-        return new Promise((resolve, reject) => {
-            if (!!id) {
-                db.query(ArticleSQL.delete(id), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("success!");
-                    }
-                });
-            } else {
-                reject("id为空！");
-            }
-        });
-    }
-};
-module.exports = ArticleServer;
+    deleteById = id => {
+        let result = new Result();
+        if (!id) {
+            result.message = "文章 id 为空，删除失败！";
+        } else {
+            result.message = new dbHelper().query(ArticleSQL.delete(id), {
+                articleId: id
+            });
+        }
+        return result;
+    };
+}

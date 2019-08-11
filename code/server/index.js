@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import articleRouter from './routes/article';
+import ArticleRouter from './routes/article';
 import classifyRouter from './routes/classify';
 
 
@@ -8,7 +8,7 @@ let app = express();
 //支持payload型数据
 app.use(bodyParser.json());
 
-app.use('/article',articleRouter);
+app.use('/article',ArticleRouter);
 app.use('/classify',classifyRouter);
 
 /*允许跨域访问 */

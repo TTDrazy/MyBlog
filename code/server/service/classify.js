@@ -1,86 +1,64 @@
-import db from "../db/modules/baseConnection";
+import dbHelper from "../db/modules/dbHelper";
 import ClassifySQL from "../db/classifySQL";
+import Result from "./result";
 
-const ClassifyServer = {
+export default class ClassifyServer {
     //获取所有分类的数据
-    getAll: () => {
-        return new Promise((resolve, reject) => {
-            db.query(ClassifySQL.queryAll, (err, result) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
-            });
-        });
-    },
+    getAll = () => {
+        let result = new Result();
+        result.message = new dbHelper().query(ClassifySQL.queryAll);
+        return result;
+    }; 
 
     //根据分类 id 获取分类
-    getById: id => {
-        return new Promise((resolve, reject) => {
-            if (!!id) {
-                db.query(ClassifySQL.queryById(id), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                });
-            } else {
-                reject("id为空！");
-            }
-        });
-    },
+    getById = id => {
+        let result = new Result();
+        if (!id) {
+            result.message = "分类 id 为空，获取失败！";
+        } else {
+            result.message = new dbHelper().query(ClassifySQL.queryById(id));
+        }
+        return result;
+    };
 
     //新增分类
-    add: ({name}) => {
-        return new Promise((resolve, reject) => {
-            if (!!name) {
-                db.query(ClassifySQL.insert(name), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("success!");
-                    }
-                });
-            } else {
-                reject("传参有空！");
-            }
-        });
-    },
+    add = ({ name }) =>{
+        let result = new Result();
+        if (!name) {
+            result.message = "分类名称为空，新增失败！";
+        } else {
+            result.message = new dbHelper().query(ClassifySQL.insert(name), "need classifyId");
+        }
+        return result;
+    };
+
+        
 
     //根据分类id 修改分类信息
-    editById: classifyInfo => {
-        return new Promise((resolve, reject) => {
-            let { id, name } = classifyInfo;
-            if (!!id) {
-                db.query(ClassifySQL.update(id, name), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("success!");
-                    }
-                });
-            } else {
-                reject("id 为空！");
-            }
-        });
-    },
+    editById = classifyInfo =>{
+        let result = new Result();
+        if (!classifyInfo.id) {
+            result.message = "分类 id 为空，修改失败！";
+        } else if (!classifyInfo.name) {
+            result.message = "分类名称为空，修改失败！";
+        } else {
+            result.message = new dbHelper().query(
+                ClassifySQL.update(classifyInfo),
+                classifyInfo
+            );
+        }
+        return result;
+    };
 
     //删除分类
-    deleteById: id => {
-        return new Promise((resolve, reject) => {
-            if (!!id) {
-                db.query(ClassifySQL.delete(id), (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("success!");
-                    }
-                });
-            } else {
-                reject("id为空！");
-            }
-        });
-    }
-};
-module.exports = ClassifyServer;
+    deleteById = id =>{
+        let result = new Result();
+        if (!id) {
+            result.message = "分类 id 为空，删除失败！";
+        } else {
+            result.message = new dbHelper().query(ClassifySQL.delete(id), { classifyId: id });
+        }
+        return result;
+    };
+        
+}
