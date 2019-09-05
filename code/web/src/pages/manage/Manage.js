@@ -18,6 +18,7 @@ class Manage extends Component {
     onCollapse = collapsed => {
         this.setState({ collapsed });
     };
+    //检测是否为管理员
     componentWillMount() {
         let adminInfo = JSON.parse(window.localStorage.getItem("adminInfo"));
         if (!!adminInfo) {

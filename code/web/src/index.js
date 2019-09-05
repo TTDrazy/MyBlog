@@ -9,6 +9,8 @@ import Login from "./pages/login/Login";
 import Main from "./pages/main/Main";
 import Manage from "./pages/manage/Manage";
 import List from "./pages/manage/article/List";
+import ShowArticle from "./pages/manage/article/ShowArticle";
+import EditArticle from "./pages/manage/article/EditArticle";
 
 let adminStore = new AdminStore();
 
@@ -19,6 +21,8 @@ ReactDOM.render(
             <Route path="/login" exact component={Login} />
             <Route path="/manage" exact component={Manage} />
             <Route path="/article/list" exact component={List} />
+            <Route path="/article/show" exact component={ShowArticle} />
+            <Route path="/article/edit" exact component={EditArticle} />
             <Route path="/article/manage" exact component={Manage} />
             <Route path="/classify/list" exact component={Manage} />
             <Route path="/classify/manage" exact component={Manage} />

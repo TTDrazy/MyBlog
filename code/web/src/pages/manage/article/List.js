@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import { Table, Divider, Button } from "antd";
 import Manage from "../Manage";
-import { withRouter ,Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 @withRouter
 class List extends Component {
@@ -14,15 +14,15 @@ class List extends Component {
     }
     utils = {
         transformDate: date => {
-            var dateArray = date.split("T");
-            var day = dateArray[0];
-            var dateDay = day.split("-");
+            let dateArray = date.split("T");
+            let day = dateArray[0];
+            let dateDay = day.split("-");
 
-            var time = dateArray[1];
-            var timeArray = time.split(".000");
-            var dateTime = timeArray[0].split(":");
+            let time = dateArray[1];
+            let timeArray = time.split(".000");
+            let dateTime = timeArray[0].split(":");
 
-            var dateDayTime =
+            let dateDayTime =
                 parseInt(dateDay[0]) +
                 "/" +
                 parseInt(dateDay[1]) +
@@ -38,12 +38,19 @@ class List extends Component {
         },
         backSortDataByDate: data => {
             //重写了sort 排序方式
-            return data.sort((a, b) => {
+            data.sort((a, b) => {
                 return (
                     Date.parse(b.date.replace(/-/g, "/")) -
                     Date.parse(a.date.replace(/-/g, "/"))
                 );
             });
+            return data;
+        },
+        deleteContent: data => {
+            data.map(item => {
+                delete item.content;
+            });
+            return data;
         }
     };
     //获取所有的文章信息
@@ -52,32 +59,37 @@ class List extends Component {
             let articleData = res.data;
             articleData.map(item => {
                 item.date = this.utils.transformDate(item.date);
-                Axios.get(
-                    `http://localhost:4000/classify/${item.classify_id}`
-                ).then(res => {
-                    item.classifyName = res.data[0].name;
-                });
+                Axios.get(`http://localhost:4000/classify/${item.classify_id}`)
+                    .then(res => {
+                        item.classifyName = res.data[0].name;
+                    })
+                    .then(() => {
+                        //按照时间降序排列
+                        articleData = this.utils.backSortDataByDate(
+                            articleData
+                        );
+                        //去除文章内容信息
+                        articleData = this.utils.deleteContent(articleData);
+                        this.setState({
+                            articleData: articleData
+                        });
+                    });
             });
-            //按照时间降序排列
-            articleData = this.utils.backSortDataByDate(articleData);
-            this.setState({
-                articleData: articleData
-            });
-            
         });
-    };
-    //解决 classifyName 无法渲染的问题
-    toggleRefresh = () => {
-        this.props.history.push({ pathname: "/article/list" });
     };
     componentDidMount() {
         this.getArticleData();
-        this.toggleRefresh();
     }
-    //查看文章
-    lookArticle=(e)=>{
-        console.log(e.target.value);
-    }
+
+    //显示文章
+    showArticle = text => {
+        const articleId = text.id;
+        this.props.history.push({
+            pathname: "/article/show",
+            query: { articleId }
+        });
+    };
+   
     render() {
         const { Column } = Table;
         let articleData = this.state.articleData;
@@ -111,11 +123,16 @@ class List extends Component {
                     title="操作"
                     align="center"
                     key="action"
-                    render={() => (
+                    render={(text, record) => (
                         <span>
-                            <Button type="primary" onClick={(e)=>this.lookArticle(e)}>查看</Button>
-                            <Divider type="vertical" />
-                            <Button type="default">修改</Button>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    this.showArticle(text);
+                                }}
+                            >
+                                查看
+                            </Button>
                             <Divider type="vertical" />
                             <Button type="danger">删除</Button>
                         </span>
