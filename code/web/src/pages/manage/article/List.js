@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Axios from "axios";
-import { Table, Divider, Button } from "antd";
+import { Table, Divider, Button, Popconfirm, message,Icon } from "antd";
 import Manage from "../Manage";
 import { withRouter } from "react-router-dom";
 
@@ -14,27 +14,11 @@ class List extends Component {
     }
     utils = {
         transformDate: date => {
-            let dateArray = date.split("T");
-            let day = dateArray[0];
-            let dateDay = day.split("-");
-
-            let time = dateArray[1];
-            let timeArray = time.split(".000");
-            let dateTime = timeArray[0].split(":");
-
-            let dateDayTime =
-                parseInt(dateDay[0]) +
-                "/" +
-                parseInt(dateDay[1]) +
-                "/" +
-                parseInt(dateDay[2]) +
-                " " +
-                parseInt(dateTime[0]) +
-                ":" +
-                parseInt(dateTime[1]) +
-                ":" +
-                parseInt(dateTime[2]);
-            return dateDayTime;
+            const dateTime = new Date(date).toJSON();
+            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
         },
         backSortDataByDate: data => {
             //重写了sort 排序方式
@@ -89,35 +73,38 @@ class List extends Component {
             query: { articleId }
         });
     };
-   
+    //删除文章
+    handleConfirm = (e)=>{
+        console.log(e)
+        // const articleId = text.id;
+        // Axios.delete(`http://localhost:4000/article/${articleId}`).then(
+        //     ()=>{
+        //         message.success('删除成功！');
+        //     }
+        // ).catch(error=>{
+        //     message.warning('删除失败！'+error);
+        // })
+    }
+    handleCancel= (e)=>{
+        message.warning('删除失败！');
+    }
     render() {
         const { Column } = Table;
         let articleData = this.state.articleData;
         const tableContent = (
-            <Table dataSource={articleData}>
+            <Table dataSource={articleData} key={articleData.id}>
                 <Column
                     title="文章编号"
                     align="center"
                     dataIndex="id"
-                    key="id"
+                    key={articleData.id}
                 />
-                <Column
-                    title="文章标题"
-                    align="center"
-                    dataIndex="title"
-                    key="title"
-                />
-                <Column
-                    title="日期"
-                    align="center"
-                    dataIndex="date"
-                    key="date"
-                />
+                <Column title="文章标题" align="center" dataIndex="title" />
+                <Column title="日期" align="center" dataIndex="date" />
                 <Column
                     title="所属分类"
                     align="center"
                     dataIndex="classifyName"
-                    key="classifyName"
                 ></Column>
                 <Column
                     title="操作"
@@ -134,7 +121,20 @@ class List extends Component {
                                 查看
                             </Button>
                             <Divider type="vertical" />
-                            <Button type="danger">删除</Button>
+                            <Popconfirm
+                                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                                title="您确定要删除此篇文章吗？"
+                                onConfirm={(e)=>this.handleConfirm(e)}
+                                onCancel={(e)=>this.handleCancel(e)}
+                                okText="删除"
+                                cancelText="取消"
+                            >
+                                <Button
+                                    type="danger"
+                                >
+                                    删除
+                                </Button>
+                            </Popconfirm>
                         </span>
                     )}
                 />

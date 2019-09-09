@@ -71,10 +71,10 @@ class Manage extends Component {
                             }
                         >
                             <Menu.Item key="3">
-                                <Link to="/article/list">文章列表</Link>
+                                <Link to="/article/list">文章管理</Link>
                             </Menu.Item>
                             <Menu.Item key="4">
-                                <Link to="/article/manage">文章管理</Link>
+                                <Link to="/article/add">新增文章</Link>
                             </Menu.Item>
                         </SubMenu>
                         <SubMenu

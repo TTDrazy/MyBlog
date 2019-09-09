@@ -15,27 +15,11 @@ class ShowArticle extends Component {
     }
     utils = {
         transformDate: date => {
-            let dateArray = date.split("T");
-            let day = dateArray[0];
-            let dateDay = day.split("-");
-
-            let time = dateArray[1];
-            let timeArray = time.split(".000");
-            let dateTime = timeArray[0].split(":");
-
-            let dateDayTime =
-                parseInt(dateDay[0]) +
-                "/" +
-                parseInt(dateDay[1]) +
-                "/" +
-                parseInt(dateDay[2]) +
-                " " +
-                parseInt(dateTime[0]) +
-                ":" +
-                parseInt(dateTime[1]) +
-                ":" +
-                parseInt(dateTime[2]);
-            return dateDayTime;
+            const dateTime = new Date(date).toJSON();
+            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
         }
     };
     //获取文章信息
@@ -69,9 +53,10 @@ class ShowArticle extends Component {
 
     toEditArticle = () => {
         const articleInfo = this.state;
+        //路由传参的时候记住要将各项拆开传递
         this.props.history.push({
             pathname: "/article/edit",
-            query: { articleInfo }
+            query: { ...articleInfo }
         });
     };
     render() {
@@ -84,7 +69,10 @@ class ShowArticle extends Component {
                     <span>文章分类：{classifyName}</span>
                 </div>
                 <article>{content}</article>
-                <Title level={4}>最后修改日期：{date}</Title>
+                <Title level={4} style={{ right: 50, margin: 10 }}>
+                    最后修改日期：{date}
+                </Title>
+                
                 <Button type="default" onClick={this.toEditArticle}>
                     修改文章
                 </Button>

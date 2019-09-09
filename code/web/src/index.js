@@ -11,6 +11,7 @@ import Manage from "./pages/manage/Manage";
 import List from "./pages/manage/article/List";
 import ShowArticle from "./pages/manage/article/ShowArticle";
 import EditArticle from "./pages/manage/article/EditArticle";
+import AddArticle from "./pages/manage/article/AddArticle";
 
 let adminStore = new AdminStore();
 
@@ -23,7 +24,7 @@ ReactDOM.render(
             <Route path="/article/list" exact component={List} />
             <Route path="/article/show" exact component={ShowArticle} />
             <Route path="/article/edit" exact component={EditArticle} />
-            <Route path="/article/manage" exact component={Manage} />
+            <Route path="/article/add" exact component={AddArticle} />
             <Route path="/classify/list" exact component={Manage} />
             <Route path="/classify/manage" exact component={Manage} />
         </Router>
