@@ -92,7 +92,7 @@ class Manage extends Component {
                                 <Link to="/classify/list">分类列表</Link>
                             </Menu.Item>
                             <Menu.Item key="8">
-                                <Link to="/classify/manage">分类管理</Link>
+                                <Link to="/classify/add">新增分类</Link>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>

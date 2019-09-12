@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Axios from "axios";
-import { Table, Divider, Button, Popconfirm, message,Icon } from "antd";
+import { Table, Divider, Button, Popconfirm, message, Icon } from "antd";
 import Manage from "../Manage";
 import { withRouter } from "react-router-dom";
 
 @withRouter
-class List extends Component {
+class ArticleList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -74,20 +74,28 @@ class List extends Component {
         });
     };
     //删除文章
-    handleConfirm = (e)=>{
-        console.log(e)
-        // const articleId = text.id;
-        // Axios.delete(`http://localhost:4000/article/${articleId}`).then(
-        //     ()=>{
-        //         message.success('删除成功！');
-        //     }
-        // ).catch(error=>{
-        //     message.warning('删除失败！'+error);
-        // })
-    }
-    handleCancel= (e)=>{
-        message.warning('删除失败！');
-    }
+    handleConfirm = text => {
+        const articleId = text.id;
+        if (!!articleId) {
+            Axios.delete(`http://localhost:4000/article/${articleId}`)
+                .then(() => {
+                    message.success("删除成功！");
+                    const articleData = this.state.articleData.filter(
+                        item => item.id !== articleId
+                    );
+                    this.setState({
+                        articleData: articleData
+                    });
+                })
+                .catch(error => {
+                    message.warning("删除失败！" + error);
+                });
+        }
+    };
+
+    handleCancel = () => {
+        message.warning("删除失败！");
+    };
     render() {
         const { Column } = Table;
         let articleData = this.state.articleData;
@@ -110,7 +118,7 @@ class List extends Component {
                     title="操作"
                     align="center"
                     key="action"
-                    render={(text, record) => (
+                    render={text => (
                         <span>
                             <Button
                                 type="primary"
@@ -122,18 +130,19 @@ class List extends Component {
                             </Button>
                             <Divider type="vertical" />
                             <Popconfirm
-                                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                                icon={
+                                    <Icon
+                                        type="question-circle-o"
+                                        style={{ color: "red" }}
+                                    />
+                                }
                                 title="您确定要删除此篇文章吗？"
-                                onConfirm={(e)=>this.handleConfirm(e)}
-                                onCancel={(e)=>this.handleCancel(e)}
+                                onConfirm={() => this.handleConfirm(text)}
+                                onCancel={() => this.handleCancel()}
                                 okText="删除"
                                 cancelText="取消"
                             >
-                                <Button
-                                    type="danger"
-                                >
-                                    删除
-                                </Button>
+                                <Button type="danger">删除</Button>
                             </Popconfirm>
                         </span>
                     )}
@@ -152,4 +161,4 @@ class List extends Component {
         );
     }
 }
-export default List;
+export default ArticleList;

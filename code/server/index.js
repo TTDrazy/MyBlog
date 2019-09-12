@@ -2,18 +2,17 @@ import express from "express";
 import bodyParser from "body-parser";
 import ArticleRouter from "./routes/article";
 import classifyRouter from "./routes/classify";
+import cors from 'express-cors';
 
 let app = express();
 
 //设置允许跨域访问该服务.
-app.all('*', (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    res.header("X-Powered-By",' 3.2.1')
-    res.header("Content-Type", "application/json;charset=utf-8");
-    next();
-  });
+ 
+app.use(cors({
+    allowedOrigins: [
+        'http://localhost:3000'
+    ]
+}))
 
 //支持payload型数据
 app.use(bodyParser.json());
