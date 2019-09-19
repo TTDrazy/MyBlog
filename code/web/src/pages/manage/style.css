@@ -11,7 +11,6 @@
     margin: 0 0 0 10px;
     vertical-align: middle;
 }
-
 .logo .logo-text {
     font-weight: 600;
     display: inline-block;
@@ -19,7 +18,7 @@
     vertical-align: middle;
 }
 
-ul.ant-menu.ant-menu-light.ant-menu-root.ant-menu-horizontal {
+ ul.ant-menu.ant-menu-light.ant-menu-root.ant-menu-horizontal {
     margin-left: 67%;
     background-color: #001529;
 }

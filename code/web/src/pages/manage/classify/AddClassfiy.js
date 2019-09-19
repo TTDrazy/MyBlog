@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Manage from "../Manage";
-import { Button, Divider, Input, message} from "antd";
+import { Button, Divider, Input, message } from "antd";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import "./classifyStyle.css";
 
 class AddClassfiy extends Component {
     constructor(props) {
@@ -49,13 +50,15 @@ class AddClassfiy extends Component {
                     onChange={value => this.handleChange(value)}
                 />
 
-                <Button type="primary" onClick={this.confirmAdd}>
-                    确认新增
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/classify/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="primary" onClick={this.confirmAdd}>
+                        确认新增
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/classify/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
         const showContent = (
@@ -64,13 +67,15 @@ class AddClassfiy extends Component {
                     <span>分类名称：{name}</span>
                 </div>
 
-                <Button type="default" onClick={this.editArticle}>
-                    修改分类
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/classify/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="primary" onClick={this.editArticle}>
+                        修改分类
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/classify/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
         return <Manage>{this.state.isAdd ? addContent : showContent}</Manage>;

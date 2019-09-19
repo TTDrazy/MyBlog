@@ -1,0 +1,35 @@
+.main .ant-layout-header{
+    background: pink;
+}
+.main h2.ant-typography, .ant-typography h2 {
+    color:#606060;
+}
+
+.main #components-layout-demo-fixed .logo {
+    width: 120px;
+    height: 31px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px 24px 16px 0;
+    float: left;
+  }
+  .main .ant-menu-dark, .ant-menu-dark .ant-menu-sub{
+    background: pink;
+  }
+  .main .title{
+    width:25%;
+    text-align: center;
+}
+.main .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected{
+    background:#7dbcea;
+}
+.main .ant-menu-dark .ant-menu-item, .ant-menu-dark .ant-menu-item-group-title, .ant-menu-dark .ant-menu-item > a{
+    color:#606060;
+}
+.main .ant-layout-sider-children{
+    margin-top: 64px;
+}
+.main .right-aside{
+    flex:0 0 300px;
+    max-width:300px;
+    right:0;
+}

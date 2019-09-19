@@ -3,7 +3,8 @@ import { Button } from "antd";
 import Axios from "axios";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
-import { Typography, Divider } from "antd";
+import { Typography, Divider, Tag } from "antd";
+import "./articleStyle.css";
 
 @withRouter
 class ShowArticle extends Component {
@@ -64,22 +65,28 @@ class ShowArticle extends Component {
         const { content, date, title, classifyName } = this.state.articleInfo;
         return (
             <Manage>
-                <Title level={2}>{title}</Title>
-                <div>
-                    <span>文章分类：{classifyName}</span>
-                </div>
-                <article>{content}</article>
-                <Title level={4} style={{ right: 50, margin: 10 }}>
-                    最后修改日期：{date}
+                <Title className="title" level={3}>
+                    {title}
                 </Title>
-                
-                <Button type="default" onClick={this.toEditArticle}>
-                    修改文章
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/article/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="classify">
+                    <span>
+                        文章分类：<Tag color="volcano">{classifyName}</Tag>
+                    </span>
+                </div>
+                <p className="articleContent">{content}</p>
+                <div className="date" level={4}>
+                    最后修改日期：{date}
+                </div>
+
+                <div className="buttons">
+                    <Button type="primary" onClick={this.toEditArticle}>
+                        修改文章
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/article/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </Manage>
         );
     }

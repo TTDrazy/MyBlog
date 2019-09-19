@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
 import Axios from "axios";
-import { Typography, Button, Divider, Input, Select, message } from "antd";
+import { Typography, Button, Divider, Input, Select, message, Tag } from "antd";
+import "./articleStyle.css";
 
 @withRouter
 class EditArticle extends Component {
@@ -71,6 +72,7 @@ class EditArticle extends Component {
                     date,
                     classify_id
                 } = this.state.articleInfo;
+                console.log(id, title, content, date, classify_id);
                 Axios.put("http://localhost:4000/article", {
                     id,
                     title,
@@ -138,40 +140,48 @@ class EditArticle extends Component {
                     最后修改日期：{date}
                 </Title>
 
-                <Button type="primary" onClick={this.confirmEdit}>
-                    确认修改
-                </Button>
-                <Divider type="vertical" />
-                <Button type="danger" onClick={this.cancelEdit}>
-                    取消修改
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/article/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="primary" onClick={this.confirmEdit}>
+                        确认修改
+                    </Button>
+                    <Divider type="vertical" />
+                    <Button type="danger" onClick={this.cancelEdit}>
+                        取消修改
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/article/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
         const showContent = (
             <>
-                <Title level={2}>{title}</Title>
-                <div>
-                    <span>文章分类：{classifyName}</span>
-                </div>
-                <article>{content}</article>
-                <Title level={4} style={{ right: 50, margin: 10 }}>
-                    最后修改日期：{date}
+                <Title className="title" level={3}>
+                    {title}
                 </Title>
+                <div className="classify">
+                    <span>
+                        文章分类：<Tag color="volcano">{classifyName}</Tag>
+                    </span>
+                </div>
+                <p className="articleContent">{content}</p>
+                <div className="date" level={4}>
+                    最后修改日期：{date}
+                </div>
 
-                <Button type="default" onClick={this.editArticle}>
-                    修改文章
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/article/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="primary" onClick={this.editArticle}>
+                        修改文章
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/article/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
-        return <Manage>{this.state.isEdit?editContent:showContent}</Manage>;
+        return <Manage>{this.state.isEdit ? editContent : showContent}</Manage>;
     }
 }
 export default EditArticle;

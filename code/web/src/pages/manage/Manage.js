@@ -41,6 +41,7 @@ class Manage extends Component {
         const { SubMenu } = Menu;
         return (
             <Layout
+                className='manage'
                 id={"components-layout-demo-side"}
                 style={{ minHeight: "100vh" }}
             >

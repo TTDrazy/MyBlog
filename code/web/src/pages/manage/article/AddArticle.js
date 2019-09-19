@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Manage from "../Manage";
-import { Button, Divider, Input, Select, message,Typography } from "antd";
+import { Button, Divider, Input, Select, message, Typography } from "antd";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import "./articleStyle.css";
 
 class AddArticle extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class AddArticle extends Component {
             content: "",
             date: "",
             classify_id: 0,
-            classifyName:'',
+            classifyName: "",
             classifyData: [],
             isAdd: true
         };
@@ -60,8 +61,8 @@ class AddArticle extends Component {
                     .then(() => {
                         message.success("新增成功！");
                         this.setState({
-                            isAdd:false
-                        })
+                            isAdd: false
+                        });
                     })
                     .catch(error => {
                         message.warning("新增失败！" + error);
@@ -104,13 +105,15 @@ class AddArticle extends Component {
                     style={{ margin: "10px 10px 20px 10px" }}
                 />
 
-                <Button type="primary" onClick={this.confirmAdd}>
-                    确认新增
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/article/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="primary" onClick={this.confirmAdd}>
+                        确认新增
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/article/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
         const showContent = (
@@ -124,18 +127,18 @@ class AddArticle extends Component {
                     最后修改日期：{this.state.date}
                 </Title>
 
-                <Button type="default" onClick={this.editArticle}>
-                    修改文章
-                </Button>
-                <Divider type="vertical" />
-                <Link to="/article/list">
-                    <Button type="primary">返回列表</Button>
-                </Link>
+                <div className="buttons">
+                    <Button type="default" onClick={this.editArticle}>
+                        修改文章
+                    </Button>
+                    <Divider type="vertical" />
+                    <Link to="/article/list">
+                        <Button type="primary">返回列表</Button>
+                    </Link>
+                </div>
             </>
         );
-        return <Manage>
-            {this.state.isAdd?addContent:showContent}
-        </Manage>;
+        return <Manage>{this.state.isAdd ? addContent : showContent}</Manage>;
     }
 }
 

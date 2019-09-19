@@ -1,0 +1,23 @@
+.title {
+    text-align: center;
+    color:#333333;
+}
+.classify {
+    text-align: right;
+    margin: 10;
+    font-size: 13px;
+    color:#858585;
+}
+.articleContent {
+    font-size: 16px;
+    color:#4D4D4D;
+    text-indent:2em;
+}
+.date {
+    text-align: right;
+    margin: 30;
+}
+.buttons{
+    right:30px;
+    text-align: right;
+}
