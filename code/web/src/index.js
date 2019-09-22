@@ -16,8 +16,9 @@ import EditClassify from "./pages/manage/classify/EditClassify";
 import AddClassfiy from "./pages/manage/classify/AddClassfiy";
 import Index from "./pages/manage/Inedx";
 import CodeArticle from "./pages/main/article/CodeArticle";
-import ReadArticle from "./component/ReadArticle";
 import ClassifyArticle from "./pages/main/article/ClassifyArticle";
+import ReadArticle from "./pages/main/article/ReadArticle";
+import Introduction from "./pages/main/introduction/Introducetion";
 
 let adminStore = new AdminStore();
 
@@ -25,6 +26,7 @@ ReactDOM.render(
     <Provider adminStore={adminStore}>
         <Router>
             <Route path="/" exact component={Main} />
+            <Route path="/introduction" exact component={Introduction} />
             <Route path="/codeArticle" exact component={CodeArticle} />
             <Route path="/readArticle" exact component={ReadArticle} />
             <Route path="/classifyArticles" exact component={ClassifyArticle} />

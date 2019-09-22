@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Main from "../Main";
-import CommonList from "../../../component/CommonList";
+import CommonList from "../../../components/CommonList";
 
 export default class CodeArticle extends Component {
     constructor(props) {

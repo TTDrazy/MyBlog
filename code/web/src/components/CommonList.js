@@ -4,6 +4,27 @@ import { withRouter} from "react-router-dom";
 
 @withRouter
 class CommonList extends Component {
+    utils = {
+        //转换日期
+        transformDate: date => {
+            const dateTime = new Date(date).toJSON();
+            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
+        },
+        //按照时间倒序排列
+        backSortDataByDate: data => {
+            //重写了sort 排序方式
+            data.sort((a, b) => {
+                return (
+                    Date.parse(b.date.replace(/-/g, "/")) -
+                    Date.parse(a.date.replace(/-/g, "/"))
+                );
+            });
+            return data;
+        }
+    };
     //跳转至文章展示页面
     toReadArticle=(articleInfo)=>{
         this.props.history.push({
@@ -11,9 +32,20 @@ class CommonList extends Component {
             query: { articleInfo }
         });
     }
+    //按照时间倒序排序
+    sortList = ( infoList,isSort = true)=>{
+        infoList.map((item)=>{
+            item.date = this.utils.transformDate(item.date)
+        });
+        if(isSort===true){
+            infoList = this.utils.backSortDataByDate(infoList);
+        }
+        return infoList;
+    }
+    
     render() {
         const { Title } = Typography;
-        const { articleData } = this.props;
+        const articleData = this.sortList(this.props.articleData,this.props.isSort);
         return (
             <>
                 <List

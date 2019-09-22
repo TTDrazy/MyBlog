@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
 import Axios from "axios";
-import { Typography, Button, Divider, Input, Select, message, Tag } from "antd";
-import "./articleStyle.css";
+import { Typography, Button, Divider, Input, Select, message } from "antd";
+import CommonArticle from "../../../components/CommonArticle";
 
 @withRouter
 class EditArticle extends Component {
@@ -107,7 +107,8 @@ class EditArticle extends Component {
         const { Title } = Typography;
         const { Option } = Select;
         const { TextArea } = Input;
-        const { content, date, title, classifyName } = this.state.articleInfo;
+        const { articleInfo } = this.state;
+        const { content, date, title, classifyName } = articleInfo;
         const classifyData = this.state.classifyData;
         const editContent = (
             <>
@@ -157,18 +158,7 @@ class EditArticle extends Component {
         );
         const showContent = (
             <>
-                <Title className="title" level={3}>
-                    {title}
-                </Title>
-                <div className="classify">
-                    <span>
-                        文章分类：<Tag color="volcano">{classifyName}</Tag>
-                    </span>
-                </div>
-                <p className="articleContent">{content}</p>
-                <div className="date" level={4}>
-                    最后修改日期：{date}
-                </div>
+                <CommonArticle articleInfo={articleInfo}></CommonArticle>
 
                 <div className="buttons">
                     <Button type="primary" onClick={this.editArticle}>

@@ -3,7 +3,7 @@ import "./mainStyle.css";
 import { Layout, Menu, Breadcrumb, Typography, Icon, Card } from "antd";
 import Axios from "axios";
 import { withRouter, Link } from "react-router-dom";
-import CommonList from "../../component/CommonList";
+import CommonList from "../../components/CommonList";
 
 @withRouter
 class Main extends Component {
@@ -23,17 +23,6 @@ class Main extends Component {
                 .toISOString()
                 .replace(/T/g, " ")
                 .replace(/\.[\d]{3}Z/, "");
-        },
-        //按照时间倒序排列
-        backSortDataByDate: data => {
-            //重写了sort 排序方式
-            data.sort((a, b) => {
-                return (
-                    Date.parse(b.date.replace(/-/g, "/")) -
-                    Date.parse(a.date.replace(/-/g, "/"))
-                );
-            });
-            return data;
         }
     };
     getAllArticleData = async () => {
@@ -73,8 +62,6 @@ class Main extends Component {
                         }
                     });
                 });
-                //将文章按照时间倒序排列
-                articleData = this.utils.backSortDataByDate(articleData);
                 this.setState({
                     articleData: articleData,
                     classifyData: classifyData
@@ -103,12 +90,12 @@ class Main extends Component {
             selectedItem: "生活感悟"
         });
     };
-    toClassifyArticle=(articleIdList)=>{
+    toClassifyArticle = (articleIdList, classifyName) => {
         this.props.history.push({
             pathname: "/classifyArticles",
-            query: { articleIdList }
+            query: { article: { articleIdList, classifyName } }
         });
-    }
+    };
     render() {
         const { Header, Footer, Sider, Content } = Layout;
         const { Title } = Typography;
@@ -123,7 +110,7 @@ class Main extends Component {
                         defaultSelectedKeys={["1"]}
                         style={{ lineHeight: "64px" }}
                     >
-                        <Menu.Item className="title">
+                        <Menu.Item className="blog-title">
                             <Link to="/">
                                 <Title level={2}> Drazy 的 BLOG</Title>
                             </Link>
@@ -145,8 +132,21 @@ class Main extends Component {
                 <Layout>
                     <Content style={{ padding: "0 30px", marginTop: 64 }}>
                         <Breadcrumb style={{ margin: "16px 0" }}>
-                            <Breadcrumb.Item>Drazy</Breadcrumb.Item>
-                            <Breadcrumb.Item>{selectedItem}</Breadcrumb.Item>
+                            <Link to="/">
+                                <Breadcrumb.Item>Drazy</Breadcrumb.Item>
+                            </Link>
+                            <Link to="/">
+                                <Breadcrumb.Item>
+                                    {selectedItem}
+                                </Breadcrumb.Item>
+                            </Link>
+                            {this.props.articleTitle ? (
+                                <Breadcrumb.Item>
+                                    {this.props.articleTitle}
+                                </Breadcrumb.Item>
+                            ) : (
+                                <></>
+                            )}
                         </Breadcrumb>
                         <div className="right-aside"></div>
                         <div
@@ -176,9 +176,9 @@ class Main extends Component {
                             }}
                             bodyStyle={{ backgroundColor: "#FFE1FF" }}
                             extra={
-                                <a href="#" style={{ color: "#606060" }}>
-                                    More...
-                                </a>
+                                <Link to='/introduction' style={{ color: "#606060" }}>
+                                    了解更多......
+                                </Link>
                             }
                         >
                             <p>一只可爱的程序猿鼓励师(#^.^#)</p>
@@ -197,13 +197,23 @@ class Main extends Component {
                             bodyStyle={{ backgroundColor: "#FFFFE0" }}
                         >
                             {classifyData.map((item, index) => (
-                                <p key={index} onClick={()=>this.toClassifyArticle(item.articleId)}>
-                                    {item.name}
-                                    {`(${
-                                        !!item.articleId
-                                            ? item.articleId.length
-                                            : 0
-                                    })`}
+                                <p
+                                    key={index}
+                                    onClick={() =>
+                                        this.toClassifyArticle(
+                                            item.articleId,
+                                            item.name
+                                        )
+                                    }
+                                >
+                                    <a>
+                                        {item.name}
+                                        {`(${
+                                            !!item.articleId
+                                                ? item.articleId.length
+                                                : 0
+                                        })`}
+                                    </a>
                                 </p>
                             ))}
                         </Card>

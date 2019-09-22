@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Button } from "antd";
 import Axios from "axios";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
-import { Typography, Divider, Tag } from "antd";
+import {Divider , Button } from "antd";
 import "./articleStyle.css";
+import CommonArticle from "../../../components/CommonArticle";
 
 @withRouter
 class ShowArticle extends Component {
@@ -61,23 +61,10 @@ class ShowArticle extends Component {
         });
     };
     render() {
-        const { Title } = Typography;
-        const { content, date, title, classifyName } = this.state.articleInfo;
+        const {articleInfo} = this.state;
         return (
             <Manage>
-                <Title className="title" level={3}>
-                    {title}
-                </Title>
-                <div className="classify">
-                    <span>
-                        文章分类：<Tag color="volcano">{classifyName}</Tag>
-                    </span>
-                </div>
-                <p className="articleContent">{content}</p>
-                <div className="date" level={4}>
-                    最后修改日期：{date}
-                </div>
-
+                <CommonArticle articleInfo = {articleInfo}></CommonArticle>
                 <div className="buttons">
                     <Button type="primary" onClick={this.toEditArticle}>
                         修改文章
