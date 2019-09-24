@@ -25,8 +25,8 @@ let adminStore = new AdminStore();
 ReactDOM.render(
     <Provider adminStore={adminStore}>
         <Router>
-            <Route path="/" exact component={Main} />
-            <Route path="/introduction" exact component={Introduction} />
+            <Route path="/" exact component={Introduction} />
+            <Route path="/main" exact component={Main} />
             <Route path="/codeArticle" exact component={CodeArticle} />
             <Route path="/readArticle" exact component={ReadArticle} />
             <Route path="/classifyArticles" exact component={ClassifyArticle} />

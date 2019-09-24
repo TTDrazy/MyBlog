@@ -26,7 +26,7 @@ class ReadArticle extends Component {
             <Main articleTitle={this.state.articleInfo.title}>
                 <CommonArticle articleInfo = {articleInfo}></CommonArticle>
                 <div className="buttons">
-                    <Link to="/">
+                    <Link to="/main">
                         <Button type="primary">返回列表</Button>
                     </Link>
                 </div>

@@ -10,6 +10,13 @@ export default class ArticleServer {
         return result;
     };
 
+    //获取所有文章的数据并包含分类名称
+    getAllHasClassifyName = ()=>{
+      let result = new Result();
+      result.message = new dbHelper().query(ArticleSQL.queryAllHasClassifyName);
+      return result; 
+    }
+    
     //根据文章 id 获取文章
     getById = id => {
         let result = new Result();
@@ -20,6 +27,28 @@ export default class ArticleServer {
         }
         return result;
     };
+
+    //根据文章 id 查询所有的文章数据并且带有相应的分类信息
+    getByIdHasClassifyName = id =>{
+        let result = new Result();
+        if (!id) {
+            result.message = "文章 id 为空，获取失败！";
+        } else {
+            result.message = new dbHelper().query(ArticleSQL.queryByIdHasClassifyName(id));
+        }
+        return result;
+    }
+
+    //根据分类 id 查询所有的文章数据并且带有相应的分类信息
+    getListByIdHasClassifyName = classifyId =>{
+        let result = new Result();
+        if (!classifyId) {
+            result.message = "分类 id 为空，获取失败！";
+        } else {
+            result.message = new dbHelper().query(ArticleSQL.queryArticleListByIdHasClassifyName(classifyId));
+        }
+        return result;
+    }
 
     //新增文章
     add = articleInfo => {

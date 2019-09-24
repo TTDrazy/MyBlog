@@ -111,7 +111,7 @@ class Main extends Component {
                         style={{ lineHeight: "64px" }}
                     >
                         <Menu.Item className="blog-title">
-                            <Link to="/">
+                            <Link to="/main">
                                 <Title level={2}> Drazy 的 BLOG</Title>
                             </Link>
                         </Menu.Item>
@@ -135,7 +135,7 @@ class Main extends Component {
                             <Link to="/">
                                 <Breadcrumb.Item>Drazy</Breadcrumb.Item>
                             </Link>
-                            <Link to="/">
+                            <Link to="/main">
                                 <Breadcrumb.Item>
                                     {selectedItem}
                                 </Breadcrumb.Item>
@@ -176,8 +176,8 @@ class Main extends Component {
                             }}
                             bodyStyle={{ backgroundColor: "#FFE1FF" }}
                             extra={
-                                <Link to='/introduction' style={{ color: "#606060" }}>
-                                    了解更多......
+                                <Link to='/' style={{ color: "#606060" }}>
+                                    More...
                                 </Link>
                             }
                         >
