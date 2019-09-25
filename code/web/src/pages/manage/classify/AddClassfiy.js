@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Manage from "../Manage";
 import { Button, Divider, Input, message } from "antd";
 import { Link } from "react-router-dom";
-import Axios from "axios";
 import "./classifyStyle.css";
+import ClassifyApi from "../../../apis/ClassifyAPI";
 
 class AddClassfiy extends Component {
     constructor(props) {
@@ -23,9 +23,8 @@ class AddClassfiy extends Component {
     //确认新增
     confirmAdd = () => {
         const { name } = this.state;
-        Axios.post("http://localhost:4000/classify", {
-            name
-        })
+        new ClassifyApi()
+            .addArticle({ name })
             .then(() => {
                 message.success("新增成功！");
                 this.setState({

@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
     res.send(result);
 });
 
-//根据文章 id 查询所有的文章数据并且带有相应的分类信息
+//根据文章 id 查询对应文章数据并且带有相应的分类信息
 router.get("/ById/:id", async (req, res) => {
     const id = req.params.id;
     let data = await new ArticleServer().getByIdHasClassifyName(id).message;

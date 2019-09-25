@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import Axios from "axios";
 import { Table, Divider, Button, Popconfirm, message, Icon } from "antd";
 import Manage from "../Manage";
 import { withRouter } from "react-router-dom";
+import ArticleApi from "../../../apis/ArticleAPI";
+import Tool from "../../../tools/Tool";
 
 @withRouter
 class ArticleList extends Component {
@@ -12,57 +13,18 @@ class ArticleList extends Component {
             articleData: []
         };
     }
-    utils = {
-        transformDate: date => {
-            const dateTime = new Date(date).toJSON();
-            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
-                .toISOString()
-                .replace(/T/g, " ")
-                .replace(/\.[\d]{3}Z/, "");
-        },
-        backSortDataByDate: data => {
-            //重写了sort 排序方式
-            data.sort((a, b) => {
-                return (
-                    Date.parse(b.date.replace(/-/g, "/")) -
-                    Date.parse(a.date.replace(/-/g, "/"))
-                );
-            });
-            return data;
-        },
-        deleteContent: data => {
-            data.map(item => {
-                delete item.content;
-            });
-            return data;
-        }
-    };
-    //获取所有的文章信息
-    getArticleData = () => {
-        Axios.get("http://localhost:4000/article").then(res => {
-            let articleData = res.data;
-            articleData.map(item => {
-                item.date = this.utils.transformDate(item.date);
-                Axios.get(`http://localhost:4000/classify/${item.classify_id}`)
-                    .then(res => {
-                        item.classifyName = res.data[0].name;
-                    })
-                    .then(() => {
-                        //按照时间降序排列
-                        articleData = this.utils.backSortDataByDate(
-                            articleData
-                        );
-                        //去除文章内容信息
-                        articleData = this.utils.deleteContent(articleData);
-                        this.setState({
-                            articleData: articleData
-                        });
-                    });
+    componentDidMount() {
+        //获取所有的文章信息
+        new ArticleApi().getAllHasClassifyName().then(result => {
+            result.map(item =>{
+                item.date = new Tool().transformDate(item.date);
+            })
+            result = new Tool().backSortDataByDate(result);
+            result = new Tool().deleteContent(result);
+            this.setState({
+                articleData: result
             });
         });
-    };
-    componentDidMount() {
-        this.getArticleData();
     }
 
     //显示文章
@@ -77,7 +39,8 @@ class ArticleList extends Component {
     handleConfirm = text => {
         const articleId = text.id;
         if (!!articleId) {
-            Axios.delete(`http://localhost:4000/article/${articleId}`)
+            new ArticleApi()
+                .deleteById(articleId)
                 .then(() => {
                     message.success("删除成功！");
                     const articleData = this.state.articleData.filter(

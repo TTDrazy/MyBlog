@@ -29,7 +29,6 @@ router.get("/:id", async (req, res, next) => {
 //新增分类
 router.post("/", async (req, res, next) => {
     const { name } = req.body;
-
     const dataModel = new ClassifyModel({ id: 0, name });
     const result = await new ClassifyServer().add(dataModel).message;
     res.send(result);

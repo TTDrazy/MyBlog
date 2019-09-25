@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { message, Layout, Menu, Breadcrumb, Icon } from "antd";
 import { observer, inject } from "mobx-react";
-import { withRouter ,Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Logo from "../../imgs/logo.js";
 import "./style.css";
 
@@ -41,7 +41,7 @@ class Manage extends Component {
         const { SubMenu } = Menu;
         return (
             <Layout
-                className='manage'
+                className="manage"
                 id={"components-layout-demo-side"}
                 style={{ minHeight: "100vh" }}
             >
@@ -51,10 +51,12 @@ class Manage extends Component {
                     collapsed={this.state.collapsed}
                     onCollapse={this.onCollapse}
                 >
-                    <div className="logo">
-                        <Logo.title className="logo-img" />
-                        <span className="logo-text">Blog 后台管理</span>
-                    </div>
+                    <Link to="/manage">
+                        <div className="logo">
+                            <Logo.title className="logo-img" />
+                            <span className="logo-text">Blog 后台管理</span>
+                        </div>
+                    </Link>
                     <Menu
                         theme="dark"
                         defaultSelectedKeys={["article"]}

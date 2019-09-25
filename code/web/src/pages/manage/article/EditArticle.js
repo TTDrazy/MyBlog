@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
-import Axios from "axios";
 import { Typography, Button, Divider, Input, Select, message } from "antd";
 import CommonArticle from "../../../components/CommonArticle";
+import ArticleApi from "../../../apis/ArticleAPI";
+import ClassifyApi from "../../../apis/ClassifyAPI";
+import Tool from "../../../tools/Tool";
 
 @withRouter
 class EditArticle extends Component {
@@ -15,22 +17,22 @@ class EditArticle extends Component {
             isEdit: true
         };
     }
-    getAllClassify = () => {
-        Axios.get("http://localhost:4000/classify").then(res => {
-            let classifyData = res.data;
-            this.setState({
-                classifyData: classifyData
-            });
-        });
-    };
 
     componentDidMount() {
         //取到传递过来的articleId
-        const articleInfo = this.props.location.query.articleInfo;
-        this.setState({
-            articleInfo: articleInfo
-        });
-        this.getAllClassify();
+        const articleId = this.props.location.query.id;
+        new ArticleApi().getByIdHasClassifyName(articleId).then((result)=>{
+            result.date = new Tool().transformDate(result.date);
+            this.setState({
+                articleInfo: result
+            });
+        })
+        new ClassifyApi().getAll().then((result)=>{
+            let classifyData = result;
+            this.setState({
+                classifyData
+            });
+        })
     }
     //控制输入框
     handleChange = e => {
@@ -72,21 +74,19 @@ class EditArticle extends Component {
                     date,
                     classify_id
                 } = this.state.articleInfo;
-                console.log(id, title, content, date, classify_id);
-                Axios.put("http://localhost:4000/article", {
+                new ArticleApi().editArticleById({
                     id,
                     title,
                     content,
                     date,
                     classify_id
-                })
-                    .then(() => {
+                }).then(() => {
                         message.success("更新成功！");
                     })
                     .catch(error => {
                         message.warning("更新失败！" + error);
                     });
-            }
+            }       
         );
         this.setState({
             isEdit: false

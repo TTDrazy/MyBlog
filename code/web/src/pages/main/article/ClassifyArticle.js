@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Main from "../Main";
 import CommonList from "../../../components/CommonList";
-import Axios from "axios";
+import ArticleApi from "../../../apis/ArticleAPI";
 
 export default class ClassifyArticle extends Component {
     constructor(props) {
@@ -12,13 +12,13 @@ export default class ClassifyArticle extends Component {
     }
     componentDidMount() {
         //取到相关文章列表的各项id
-       const {articleIdList,classifyName} = this.props.location.query.article;
+        const { articleIdList } = this.props.location.query;
+        console.log()
         //根据各项id取出文章信息
         articleIdList.map(item => {
             if (!!item) {
-                Axios.get(`http://localhost:4000/article/${item}`).then(res => {
-                    let articleInfo = res.data[0];
-                    articleInfo.classifyName = classifyName;
+                new ArticleApi().getByIdHasClassifyName(item).then(result => {
+                    let articleInfo = result;
                     this.setState({
                         articleData: [...this.state.articleData, articleInfo]
                     });

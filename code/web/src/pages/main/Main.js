@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import "./mainStyle.css";
 import { Layout, Menu, Breadcrumb, Typography, Icon, Card } from "antd";
-import Axios from "axios";
 import { withRouter, Link } from "react-router-dom";
 import CommonList from "../../components/CommonList";
+import ArticleApi from "../../apis/ArticleAPI";
+import ClassifyApi from "../../apis/ClassifyAPI";
+import Tool from "../../tools/Tool";
 
 @withRouter
 class Main extends Component {
@@ -15,69 +17,61 @@ class Main extends Component {
             classifyData: []
         };
     }
-    utils = {
-        //转换日期
-        transformDate: date => {
-            const dateTime = new Date(date).toJSON();
-            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
-                .toISOString()
-                .replace(/T/g, " ")
-                .replace(/\.[\d]{3}Z/, "");
-        }
-    };
-    getAllArticleData = async () => {
-        await Axios.get("http://localhost:4000/article").then(res => {
-            let articleData = res.data;
-            articleData.map(item => {
-                item.date = this.utils.transformDate(item.date);
-            });
-            this.setState({
-                articleData: articleData
-            });
-        });
-    };
-    getAllClassifyData = async () => {
-        await Axios.get("http://localhost:4000/classify").then(res => {
-            let classifyData = res.data;
-            this.setState({
-                classifyData: classifyData
-            });
-        });
-    };
-    //根据时间将文章倒序排序
 
     componentDidMount() {
-        //将文章按 类别 分开 ，并取共有条数
-        this.getAllArticleData().then(() => {
-            this.getAllClassifyData().then(() => {
-                let { articleData, classifyData } = this.state;
-                classifyData.map(classifyItem => {
-                    classifyItem.articleId = [];
-                    articleData.map(articleItem => {
-                        if (articleItem.classify_id === classifyItem.id) {
-                            //给 articleData 里添加 classifyName
-                            articleItem.classifyName = classifyItem.name;
-                            //给 classifyData 里添加 articleId
-                            classifyItem.articleId.push(articleItem.id);
-                        }
-                    });
+        //取到所有文章信息且包含分类信息
+        new ArticleApi()
+            .getAllHasClassifyName()
+            .then(result => {
+                //将各项文章日期转换
+                let articleData = result;
+                articleData.map(item => {
+                    item.date = new Tool().transformDate(item.date);
                 });
                 this.setState({
-                    articleData: articleData,
-                    classifyData: classifyData
+                    articleData
+                });
+            })
+            .then(() => {
+                //取到所有的分类信息
+                new ClassifyApi().getAll().then(result => {
+                    this.setState(
+                        {
+                            classifyData: result
+                        },
+                        () => {
+                            let { articleData, classifyData } = this.state;
+                            classifyData.map(classifyItem => {
+                                classifyItem.articleId = [];
+                                articleData.map(articleItem => {
+                                    if (
+                                        articleItem.classify_id ===
+                                        classifyItem.id
+                                    ) {
+                                        //给 classifyData 里添加 articleId
+                                        classifyItem.articleId.push(
+                                            articleItem.id
+                                        );
+                                    }
+                                });
+                            });
+                            this.setState({
+                                articleData: articleData,
+                                classifyData: classifyData
+                            });
+                        }
+                    );
                 });
             });
-        });
     }
+
     //跳转至该项页面，并且改变面包屑导航的文字
     toCodeArticle = () => {
         this.setState({
             selectedItem: "技术文章"
         });
-        const { articleData } = this.state;
         this.props.history.push({
-            pathname: "/codeArticle",
-            query: { articleData }
+            pathname: "/codeArticle"
         });
     };
     toManageMoneyArticle = () => {
@@ -90,10 +84,10 @@ class Main extends Component {
             selectedItem: "生活感悟"
         });
     };
-    toClassifyArticle = (articleIdList, classifyName) => {
+    toClassifyArticle = articleIdList => {
         this.props.history.push({
             pathname: "/classifyArticles",
-            query: { article: { articleIdList, classifyName } }
+            query: { articleIdList }
         });
     };
     render() {
@@ -176,7 +170,7 @@ class Main extends Component {
                             }}
                             bodyStyle={{ backgroundColor: "#FFE1FF" }}
                             extra={
-                                <Link to='/' style={{ color: "#606060" }}>
+                                <Link to="/" style={{ color: "#606060" }}>
                                     More...
                                 </Link>
                             }
@@ -200,10 +194,7 @@ class Main extends Component {
                                 <p
                                     key={index}
                                     onClick={() =>
-                                        this.toClassifyArticle(
-                                            item.articleId,
-                                            item.name
-                                        )
+                                        this.toClassifyArticle(item.articleId)
                                     }
                                 >
                                     <a>
@@ -250,7 +241,6 @@ class Main extends Component {
                         </Card>
                     </Sider>
                 </Layout>
-
                 <Footer style={{ textAlign: "center" }}>
                     Design By Drazy ©2019
                 </Footer>

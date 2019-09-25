@@ -3,6 +3,8 @@ import { Button } from "antd";
 import { withRouter, Link } from "react-router-dom";
 import CommonArticle from "../../../components/CommonArticle";
 import Main from "../Main";
+import ArticleApi from "../../../apis/ArticleAPI";
+import Tool from "../../../tools/Tool";
 
 @withRouter
 class ReadArticle extends Component {
@@ -14,10 +16,15 @@ class ReadArticle extends Component {
     }
     componentDidMount() {
         //获取具体文章信息
-        const articleInfo = this.props.location.query.articleInfo;
-        this.setState({
-            articleInfo: articleInfo
-        });
+        const articleId = this.props.location.query.articleId;
+        new ArticleApi()
+            .getByIdHasClassifyName(articleId)
+            .then(result => {
+                result.date = new Tool().transformDate(result.date);
+                this.setState({
+                    articleInfo:result
+                });
+            })
     }
 
     render() {

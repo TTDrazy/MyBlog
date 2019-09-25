@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Axios from "axios";
 import { Table, Divider, Button, Popconfirm, message, Icon } from "antd";
 import Manage from "../Manage";
 import { withRouter } from "react-router-dom";
+import ClassifyApi from "../../../apis/ClassifyAPI";
 
 @withRouter
 class ClassifyList extends Component {
@@ -15,11 +15,10 @@ class ClassifyList extends Component {
 
     componentDidMount() {
         //获取所有的分类信息
-        Axios.get("http://localhost:4000/classify").then(res => {
-            let classifyData = res.data;
+        new ClassifyApi().getAll().then(result => {
             this.setState({
-                classifyData:classifyData
-            })
+                classifyData: result
+            });
         });
     }
 
@@ -28,17 +27,18 @@ class ClassifyList extends Component {
         const classifyInfo = text;
         this.props.history.push({
             pathname: "/classify/edit",
-            query: { ...classifyInfo }
+            query: { classifyId : classifyInfo.id }
         });
     };
     //删除分类
     handleConfirm = text => {
         const classifyId = text.id;
-        if (!!classifyId) {  
-            Axios.delete(`http://localhost:4000/classify/${classifyId}`)
+        if (!!classifyId) {
+            new ClassifyApi()
+                .deleteById(classifyId)
                 .then(() => {
                     message.success("删除成功！");
-                    const classifyData = this.state.classifyData.filter(
+                    let classifyData = this.state.classifyData.filter(
                         item => item.id !== classifyId
                     );
                     this.setState({

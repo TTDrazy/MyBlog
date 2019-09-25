@@ -1,44 +1,24 @@
 import React, { Component } from "react";
 import { List, Avatar , Typography ,Button} from "antd";
 import { withRouter} from "react-router-dom";
+import Tool from "../tools/Tool";
 
 @withRouter
 class CommonList extends Component {
-    utils = {
-        //转换日期
-        transformDate: date => {
-            const dateTime = new Date(date).toJSON();
-            return new Date(+new Date(dateTime) + 8 * 3600 * 1000)
-                .toISOString()
-                .replace(/T/g, " ")
-                .replace(/\.[\d]{3}Z/, "");
-        },
-        //按照时间倒序排列
-        backSortDataByDate: data => {
-            //重写了sort 排序方式
-            data.sort((a, b) => {
-                return (
-                    Date.parse(b.date.replace(/-/g, "/")) -
-                    Date.parse(a.date.replace(/-/g, "/"))
-                );
-            });
-            return data;
-        }
-    };
     //跳转至文章展示页面
-    toReadArticle=(articleInfo)=>{
+    toReadArticle=(articleId)=>{
         this.props.history.push({
             pathname: "/readArticle",
-            query: { articleInfo }
+            query: { articleId }
         });
     }
     //按照时间倒序排序
     sortList = ( infoList,isSort = true)=>{
         infoList.map((item)=>{
-            item.date = this.utils.transformDate(item.date)
+            item.date = new Tool().transformDate(item.date);
         });
         if(isSort===true){
-            infoList = this.utils.backSortDataByDate(infoList);
+            infoList = new Tool().backSortDataByDate(infoList);
         }
         return infoList;
     }
@@ -72,7 +52,7 @@ class CommonList extends Component {
                                 description={`分类：${item.classifyName}`}
                             />
                             {`${item.content.substring(0,100)}......`}
-                                <Button type='link' onClick = {()=>this.toReadArticle(item)}>查看详情</Button>
+                                <Button type='link' onClick = {()=>this.toReadArticle(item.id)}>查看详情</Button>
                                 <br></br>
                                 <br></br>
                                 <div style={{color:'rgba(0, 0, 0, 0.45)',float:'right'}}>最后修改时间：{item.date}</div>

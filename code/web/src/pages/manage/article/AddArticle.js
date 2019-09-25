@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Manage from "../Manage";
 import { Button, Divider, Input, Select, message, Typography } from "antd";
 import { Link } from "react-router-dom";
-import Axios from "axios";
 import "./articleStyle.css";
+import ClassifyApi from "../../../apis/ClassifyAPI";
+import ArticleApi from "../../../apis/ArticleAPI";
+import CommonArticle from "../../../components/CommonArticle";
 
 class AddArticle extends Component {
     constructor(props) {
@@ -19,8 +21,8 @@ class AddArticle extends Component {
         };
     }
     componentDidMount() {
-        Axios.get("http://localhost:4000/classify").then(res => {
-            let classifyData = res.data;
+        new ClassifyApi().getAll().then(result => {
+            let classifyData = result;
             this.setState({
                 classifyData: classifyData
             });
@@ -52,12 +54,8 @@ class AddArticle extends Component {
             //this.setState 执行完成后的异步函数
             () => {
                 const { title, content, date, classify_id } = this.state;
-                Axios.post("http://localhost:4000/article", {
-                    title,
-                    content,
-                    date,
-                    classify_id
-                })
+                new ArticleApi()
+                    .addArticle({ title, content, date, classify_id })
                     .then(() => {
                         message.success("新增成功！");
                         this.setState({
@@ -72,7 +70,6 @@ class AddArticle extends Component {
     };
 
     render() {
-        const { Title } = Typography;
         const { Option } = Select;
         const { TextArea } = Input;
         const { content, title } = this.state;
@@ -118,17 +115,10 @@ class AddArticle extends Component {
         );
         const showContent = (
             <>
-                <Title level={2}>{title}</Title>
-                <div>
-                    <span>文章分类：{this.state.classifyName}</span>
-                </div>
-                <article>{content}</article>
-                <Title level={4} style={{ right: 50, margin: 10 }}>
-                    最后修改日期：{this.state.date}
-                </Title>
+                <CommonArticle articleInfo={this.state}></CommonArticle>
 
                 <div className="buttons">
-                    <Button type="default" onClick={this.editArticle}>
+                    <Button type="primary" onClick={this.editArticle}>
                         修改文章
                     </Button>
                     <Divider type="vertical" />

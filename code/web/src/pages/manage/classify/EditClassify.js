@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Manage from "../Manage";
 import { withRouter, Link } from "react-router-dom";
-import Axios from "axios";
 import { Button, Divider, Input, message } from "antd";
 import "./classifyStyle.css";
+import ClassifyApi from "../../../apis/ClassifyAPI";
 
 @withRouter
 class EditClassify extends Component {
@@ -15,10 +15,12 @@ class EditClassify extends Component {
         };
     }
     componentDidMount() {
-        //取到传递过来的 classifyInfo 信息
-        const classifyInfo = this.props.location.query;
-        this.setState({
-            classifyInfo: classifyInfo
+        //取到传递过来的 classifyId ,并通过 classifyId 取出相应文章
+        const classifyId = this.props.location.query.classifyId;
+        new ClassifyApi().getById(classifyId).then(result => {
+            this.setState({
+                classifyInfo: result
+            });
         });
     }
     //控制输入框
@@ -34,10 +36,11 @@ class EditClassify extends Component {
     //确认修改
     confirmEdit = () => {
         const { id, name } = this.state.classifyInfo;
-        Axios.put("http://localhost:4000/classify", {
-            id,
-            name
-        })
+        new ClassifyApi()
+            .editArticleById({
+                id,
+                name
+            })
             .then(() => {
                 message.success("更新成功！");
             })
